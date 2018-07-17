@@ -1,0 +1,52 @@
+The server code was developed in the osX environment.
+-----------------------------------------------------
+Apple LLVM version 9.0.0 (clang-900.0.39.2) toolchain was used.
+Boost 1.66 version was installed on the machine for faster development, instead of as 3rd party artifacts.
+      1) Asio was used for network abstraction. Asio is header only
+      2) For error codes and program options, 
+      	 boost_system & boost_program_options libraries are needed to be linked.
+CMake (cmake version 3.10.2) can be used for building the project.
+If you choose to not install cmake there is a barebones build.sh script for compiling the project.
+
+**
+-----------------------------------------------------
+The code has also been built & tested on ubuntu 16.04
+g++ 5.4.0 tool chain used 
+dev version of boost was installed 'apt install libboost-all-dev'
+
+Building
+---------
+1) To run via cmake 
+-> cd src
+-> cmake ./
+-> make
+
+2) To run via build.sh
+-> cd src
+-> ./build.sh
+
+Running
+----------
+The binary build would be 'server'.
+to run server 
+-> ./server -p <PORT>
+if you don't pass the port number server would default to port 9080.
+
+Serer processing
+----------------
+1)Server accepts connections
+2)reads the requests (TLV) format
+3)processes and displays the information if data is valid. Shutsdown the connection otherwise
+4)writes 1 "success" for response for 1 buffer.
+5)waits for another read to complete
+6)If there is no activity (read/write) on the connection, shutsdown the connection. 
+
+
+Following command was used for testing to ensure multiple connection were
+simultaneously handled by the server
+
+for i in {1..99}
+do
+    echo 'E11000000000DA7A0000000501020304050B1E00000000' | xxd -r -p | nc -p 247$i localhost 9080 -w 5 &
+done
+
